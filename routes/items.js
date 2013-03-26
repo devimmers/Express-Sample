@@ -16,17 +16,26 @@ var exampleItem = new Item({
 });
 
 //Find all items
-exports.findAll = function() {
+exports.findAll = function(req, res) {
+    console.log('Find All');
+
     Item.find({}, function(error, data){
-        console.log(data);
+        if (error) {
+            console.log("Error");
+        }
+        res.send(data);
     });
 };
 
-exampleItem.save(function (err, data) {
-    if (err) // TODO handle the error
-        data.speak();
-});
+exports.find = function(req, res) {
+    var id = req.params.id;
+    console.log('Find by id: ' + id);
 
-Item.find({}, function(error, data){
-    console.log(data);
-});
+    Item.find({_id:id}, function(error, data){
+        if(error) {
+            console.log("Error finding by id :" + id);
+        }
+        res.send(data);
+    });
+};
+
