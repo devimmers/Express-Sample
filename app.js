@@ -1,26 +1,29 @@
 var express = require('express'),
     path = require('path'),
-    http = require('http'),
+    http = require('http');
+
+var config = require('./config').config,
     items = require('./routes/items');
 
 var app = express();
 
 app.configure(function () {
-    app.use(express.logger('dev'));     /* 'default', 'short', 'tiny', 'dev' */
+    app.set('port', config.app.port || 3000);
+    app.use(express.logger('dev'));
     app.use(express.bodyParser());
+    app.use(express.favicon());
+    app.use(express.methodOverride());
     app.use(express.static(path.join(__dirname, 'public')));
 });
 
-
-
+//Test response for base
+app.get('/', items.findAll);
 app.get('/items', items.findAll);
 app.get('/items/:id', items.find);
-
-/*
-app.get('/items/:id', items.findById);
 app.post('/items', items.addItem);
 app.put('/items/:id', items.updateItem);
 app.delete('/items/:id', items.deleteItem);
-  */
-app.listen(3000);
-console.log('Listening on port 3000...');
+
+app.listen(app.get('port'), function() {
+    console.log("Server listening on port " + app.get('port'));
+});
