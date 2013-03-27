@@ -7,16 +7,16 @@ var itemSchema = new mongoose.Schema({
     description: String,
     picture: String
 });
+
 var Item = mongoose.model('Item', itemSchema);
 
-var test_item = new Item({name:"qwe", year:"123", price:213, description:"qwe", picture:"qweqwe"});
-
-function baseInit() {
+//Add test item data to bd
+function testItemInit() {
     for(var i=0; i<10; i++) {
-        test_item.save(function(err){
+        var testItem = new Item({name:"qwe" + i, year:"123", price:213, description:"qwe", picture:"qweqwe"});
+        testItem.save(function(err){
             if (err) {
-                console.log("Eroro saved");
-                res.send("Fail");
+                console.log("Error saved");
                 throw err;
             }
             console.log("Saved");
@@ -24,7 +24,6 @@ function baseInit() {
     }
 }
 
-baseInit();
 exports.model = Item;
 exports.schema = itemSchema;
 
