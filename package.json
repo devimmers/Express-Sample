@@ -9,6 +9,9 @@
         "should": "*",
         "mocha": "*",
         "supertest": "*",
-        "mongoose": "*"
+        "mongoose": "*",
+        "passport": "*",
+        "passport-local": "*",
+        "passport-local-mongoose": "*"
     }
 }
