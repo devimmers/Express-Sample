@@ -1,7 +1,8 @@
 var mongoose = require('mongoose'),
-    Item = require('../models/item.js').model;
+    Item = require('../models/item.js').model,
+    config = require('../config.js').config;
 
-mongoose.connect('mongodb://localhost/itemsdb');
+mongoose.connect(config.mongo.adress);
 
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));

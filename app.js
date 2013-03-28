@@ -4,6 +4,7 @@ var express = require('express'),
 
 var config = require('./config').config,
     items = require('./routes/items'),
+    users = require('./routes/users'),
     passportConfig = require("./passport-config"),
     passport = require('passport'),
     mongoose = require('mongoose');
@@ -22,6 +23,18 @@ app.configure(function () {
     app.use(express.static(path.join(__dirname, 'public')));
     app.use(passport.initialize());
     app.use(passport.session());
+    app.use(function(req, res, next) {
+        if(req.isAuthenticated()) {
+            res.locals.user = req.user
+        }
+        var msgs = req.session.messages || []
+        res.locals({
+            messages: msgs,
+            hasMessages: !! msgs.length
+        })
+        req.session.messages = []
+        next()
+    });
     app.use(app.router);
     app.use(express.static(path.join(__dirname, 'public')));
 });
@@ -29,19 +42,24 @@ app.configure(function () {
 //Passport settings
 passportConfig();
 
+//Test response for base
+app.get('/', items.findAll); //Test show list of all items
+app.get('/items', ensureAuthenticated, items.findAll); // All items
+app.get('/items/:id', ensureAuthenticated, items.find); // Find item by id
+app.post('/items', ensureAuthenticated, items.addItem); // Add new item
+app.put('/items/:id', ensureAuthenticated,items.updateItem); // Update item
+app.delete('/items/:id', ensureAuthenticated,items.deleteItem); //Delete item
+
 // POST /login
 app.post('/login',
     passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login' })
 );
+//Get logout action
+app.get('/logout', users.logout);
+//Get register action
+app.post('/register', users.register);
 
-//Test response for base
-app.get('/', items.findAll); //Test show list of all items
-app.get('/items', ensureAuthenticated, items.findAll); // All items
-app.get('/items/:id', items.find); // Find item by id
-app.post('/items', items.addItem); // Add new item
-app.put('/items/:id', items.updateItem); // Update item
-app.delete('/items/:id', items.deleteItem); //Delete item
-
+//Start app
 app.listen(app.get('port'), function() {
     console.log("Server listening on port " + app.get('port'));
 });

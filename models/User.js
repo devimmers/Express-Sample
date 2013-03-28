@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 var userSchema = new mongoose.Schema({
-    name: String,
+    username: String,
     password: String,
     email: String
 });
@@ -22,7 +22,7 @@ var userModel =  mongoose.model('User', userSchema);
 //Add test user data to bd
 function testUserInit() {
     for(var i=0; i<5; i++) {
-        var testUser = new userModel({name:"Bob"+i, password:"123", email:"test@mail.com"});
+        var testUser = new userModel({username:"Bob"+i, password:"123", email:"test@mail.com"});
         testUser.save(function(err){
             if (err) {
                 console.log("Error saved");
